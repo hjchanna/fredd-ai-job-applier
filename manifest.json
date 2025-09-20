@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "fredd-ai-job-applier",
+  "version": "1.0",
+  "description": "An AI-powered Chrome plugin to automate job applications on LinkedIn.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI Job Applier",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "alarms",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://api.openai.com/*"
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

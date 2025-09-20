@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Job Applier</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 400px;
+            min-height: 500px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #334155;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            background: #f8fafc;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: white;
+            min-height: 400px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .job-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .job-item {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .job-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-item.selected {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+        }
+
+        .job-title {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .job-star {
+            cursor: pointer;
+            font-size: 16px;
+            color: #d1d5db;
+            margin-left: 8px;
+        }
+
+        .job-star.starred {
+            color: #fbbf24;
+        }
+
+        .job-company {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .job-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-reviewing {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-applied {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-skipped {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-applying {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        #review-section {
+            display: none;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        #review-section.active {
+            display: block;
+        }
+
+        .review-header {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .review-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .match-score {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .score-high {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .score-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .score-low {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .cover-letter {
+            margin: 16px 0;
+        }
+
+        .cover-letter textarea {
+            min-height: 120px;
+        }
+
+        #status-message {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+
+        #status-message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            display: block;
+        }
+
+        #status-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            display: block;
+        }
+
+        #status-message.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+            display: block;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .job-details {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .job-detail-header {
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .job-detail-content h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .job-detail-content h3 {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        .job-info-section {
+            margin: 20px 0;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .job-info-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .job-description {
+            line-height: 1.6;
+            color: #4b5563;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .cover-letter-content {
+            line-height: 1.6;
+            color: #4b5563;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .job-info-section.error {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AI Job Applier</h1>
+        <p>Automate your LinkedIn job applications with AI</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-tab="summary">Summary</button>
+        <button class="tab" data-tab="postings">Postings</button>
+        <button class="tab" data-tab="settings">Settings</button>
+    </div>
+
+    <!-- Summary Tab -->
+    <div id="summary" class="tab-content active">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="pending-count">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="applied-count">0</div>
+                <div class="stat-label">Applied</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="skipped-count">0</div>
+                <div class="stat-label">Skipped</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="reviewing-count">0</div>
+                <div class="stat-label">Reviewing</div>
+            </div>
+        </div>
+        
+        <div class="btn-group">
+            <button id="start-application" class="btn btn-primary">
+                <span id="start-btn-text">Start Application</span>
+                <span id="start-btn-loading" class="loading hidden"></span>
+            </button>
+            <button id="pause-application" class="btn btn-secondary hidden">Pause</button>
+        </div>
+
+        <div id="status-message"></div>
+    </div>
+
+    <!-- Postings Tab -->
+    <div id="postings" class="tab-content">
+        <div id="job-list" class="job-list">
+            <div id="no-jobs" class="text-center" style="padding: 40px; color: #64748b;">
+                No jobs found. Start the application process to begin collecting job postings.
+            </div>
+        </div>
+        
+        <div id="job-details" class="hidden">
+            <h3>Job Details</h3>
+            <div id="job-details-content"></div>
+        </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="settings" class="tab-content">
+        <form id="settings-form">
+            <div class="form-group">
+                <label for="keywords">Job Search Keywords</label>
+                <input type="text" id="keywords" placeholder="e.g., Software Engineer, Frontend Developer">
+            </div>
+
+            <div class="form-group">
+                <label for="criteria">Application Criteria</label>
+                <textarea id="criteria" placeholder="Describe your preferences for job matching (e.g., remote work, specific technologies, company size, etc.)"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="cv">Your CV Content</label>
+                <textarea id="cv" placeholder="Paste your complete CV/resume content here"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="llmToken">ChatGPT API Key</label>
+                <input type="password" id="llmToken" placeholder="sk-...">
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+                <button type="button" id="clear-data" class="btn btn-danger">Clear All Data</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Review Section (appears overlay-style) -->
+    <div id="review-section">
+        <div class="review-header">
+            <h3 class="review-title">Review & Confirm Application</h3>
+            <div id="review-job-info">
+                <div id="review-job-title"></div>
+                <div id="review-job-company"></div>
+            </div>
+            <div id="review-match-score"></div>
+        </div>
+
+        <div class="cover-letter">
+            <label for="review-cover-letter">Generated Cover Letter</label>
+            <textarea id="review-cover-letter" readonly></textarea>
+        </div>
+
+        <div class="btn-group">
+            <button id="confirm-apply" class="btn btn-success">Confirm & Apply</button>
+            <button id="decline-apply" class="btn btn-danger">Decline</button>
+            <button id="navigate-to-job" class="btn btn-secondary">Navigate to Job Post</button>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
