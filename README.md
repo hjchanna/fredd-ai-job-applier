@@ -4,12 +4,17 @@ An intelligent Chrome extension that automates job applications on LinkedIn usin
 
 ## Features
 
-- **Automated Job Search**: Scrapes LinkedIn job postings based on your keywords
+- **Automated Job Search**: Scrapes LinkedIn job postings based on your keywords with updated selectors
 - **AI-Powered Analysis**: Uses ChatGPT to analyze job compatibility and generate tailored cover letters
 - **Smart Review Process**: Presents each application for your review before submission
 - **Queue Management**: Efficiently processes multiple job applications in sequence
 - **Status Tracking**: Monitors application status (pending, reviewing, applied, skipped)
 - **Modern UI**: Clean, tabbed interface with real-time statistics
+- **Full Job Details View**: Click any job to view complete details, description, and cover letter
+- **Individual Job Processing**: Process specific jobs or run full automation
+- **Background Processing**: Continues processing even when popup is closed
+- **Comprehensive Logging**: Detailed debugging and troubleshooting logs
+- **Enhanced Navigation**: Back button functionality and intuitive job management
 
 ## Installation
 
@@ -21,21 +26,11 @@ An intelligent Chrome extension that automates job applications on LinkedIn usin
    cd fredd-ai-job-applier
    ```
 
-2. **Create Icon Files** (Required)
-   Since the extension references icon files, you need to create them:
-   ```bash
-   mkdir -p icons
-   # Create simple 16x16, 32x32, 48x48, and 128x128 PNG icons
-   # You can use any icon creation tool or online generator
-   # Name them: icon16.png, icon32.png, icon48.png, icon128.png
-   # Also create active versions: icon16-active.png, etc.
-   ```
-
-3. **Open Chrome Extensions Page**
+2. **Open Chrome Extensions Page**
    - Navigate to `chrome://extensions/`
    - Enable "Developer mode" (toggle in top right)
 
-4. **Load the Extension**
+3. **Load the Extension**
    - Click "Load unpacked"
    - Select the `fredd-ai-job-applier` folder
    - The extension should now appear in your extensions list
@@ -117,7 +112,9 @@ An intelligent Chrome extension that automates job applications on LinkedIn usin
 #### Postings Tab
 - **Job List**: All discovered jobs with status indicators
 - **Star System**: Mark important jobs
-- **Job Details**: Click any job to view details
+- **Job Details**: Click any job to view full-page details with description and cover letter
+- **Individual Actions**: "Process Job" and "View Job Post" buttons for each job
+- **Back Navigation**: Return to job list from detail view
 
 #### Settings Tab
 - **Configuration Form**: All required settings
@@ -139,6 +136,8 @@ An intelligent Chrome extension that automates job applications on LinkedIn usin
 - **Manual Review**: Every application requires your approval
 - **Pause Functionality**: Stop the process at any time
 - **Error Recovery**: Continues processing even if individual jobs fail
+- **CSP Compliance**: Secure code execution without inline JavaScript
+- **Background Persistence**: Maintains state across browser sessions
 
 ## Troubleshooting
 
@@ -163,11 +162,18 @@ An intelligent Chrome extension that automates job applications on LinkedIn usin
    - LinkedIn may have changed their interface
    - Try applying manually for failed jobs
 
+5. **Job Description Not Found**
+   - Extension uses multiple fallback selectors for LinkedIn's dynamic DOM
+   - Check browser console (F12) for detailed selector testing logs
+   - LinkedIn frequently updates their class names and structure
+
 ### Debug Information
 
-- Check the browser console (F12) for detailed error messages
-- Extension logs are available in the Chrome Extensions page
+- Check the browser console (F12) for detailed error messages and selector testing
+- Extension logs comprehensive debugging information during job scraping
+- Background script logs available in Chrome Extensions page service worker
 - Status messages in the extension provide real-time feedback
+- Full job details view shows errors and processing status for each job
 
 ## Limitations
 
@@ -229,6 +235,22 @@ For issues, questions, or feature requests:
 3. Create an issue in the repository
 
 ## Changelog
+
+### Version 1.2
+- Enhanced job description scraping with multiple fallback selectors
+- Added full-page job details view with back navigation
+- Implemented background processing continuation when popup is closed
+- Fixed Content Security Policy compliance by removing inline event handlers
+- Added comprehensive logging and debugging capabilities
+- Improved LinkedIn DOM selector compatibility
+- Added individual job processing controls
+
+### Version 1.1
+- Updated LinkedIn selectors for current DOM structure
+- Fixed pause/start functionality issues
+- Enhanced error handling and recovery
+- Added "View Job Post" buttons for direct LinkedIn access
+- Improved UI responsiveness and user experience
 
 ### Version 1.0
 - Initial release
